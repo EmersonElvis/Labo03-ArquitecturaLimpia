@@ -8,30 +8,41 @@ import java.util.List;
 
 public class CursoRepositoryMySQL implements CursoRepository {
 
+    // Lista simulada en memoria mientras no haya conexión a MySQL real
+    private final List<Curso> baseDatosSimulada = new ArrayList<>();
+
     @Override
     public void guardar(Curso curso) {
+        baseDatosSimulada.add(curso);
         System.out.println("[MySQL] Guardando curso en la base de datos...");
     }
 
     @Override
     public List<Curso> obtenerTodos() {
         System.out.println("[MySQL] Obteniendo cursos desde MySQL...");
-        return new ArrayList<>();
+        return baseDatosSimulada;
     }
 
     @Override
     public Curso obtenerPorId(int id) {
-        System.out.println("[MySQL] Buscando curso con ID " + id + " en MySQL...");
-        return null;
+        return baseDatosSimulada.stream()
+                .filter(c -> c.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
     public void actualizar(Curso curso) {
-        System.out.println("[MySQL] Actualizando curso en MySQL...");
+        for (int i = 0; i < baseDatosSimulada.size(); i++) {
+            if (baseDatosSimulada.get(i).getId() == curso.getId()) {
+                baseDatosSimulada.set(i, curso);
+                break;
+            }
+        }
     }
 
     @Override
     public void eliminar(int id) {
-        System.out.println("[MySQL] Eliminando curso en MySQL...");
+        baseDatosSimulada.removeIf(c -> c.getId() == id);
     }
 }
